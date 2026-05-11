@@ -21,6 +21,11 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(order));
     }
 
+    @PostMapping("/checkout")
+    public ResponseEntity<Order> checkout(org.springframework.security.core.Authentication authentication) {
+        return ResponseEntity.ok(orderService.checkout(authentication.getName()));
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(orderService.getOrdersByUserId(userId));

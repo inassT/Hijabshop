@@ -1,123 +1,100 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --primary-color: #D4A373; /* Couleur sable / dorée */
-  --secondary-color: #FAEDCD; /* Beige clair */
-  --accent-color: #A98467; /* Marron doux */
-  --background-color: #FEFAE0; /* Blanc cassé / Crème */
-  --text-color: #2F3E46; /* Gris très foncé / Bleu nuit */
-  --surface-color: #FFFFFF;
-  --transition-speed: 0.3s;
+@layer base {
+  :root {
+    --primary-pink: #F8BBD0;
+    --secondary-pink: #FCE4EC;
+    --nude: #F5E6DA;
+  }
+
+  * {
+    @apply transition-colors duration-300;
+  }
+
+  body {
+    @apply bg-[#FAF9F6] text-darkText font-sans antialiased overflow-x-hidden;
+    background-image: 
+      radial-gradient(circle at 0% 0%, #FCE4EC 0%, transparent 25%),
+      radial-gradient(circle at 100% 100%, #F5E6DA 0%, transparent 25%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer components {
+  /* Premium Containers */
+  .premium-card {
+    @apply bg-white/80 backdrop-blur-lg border border-white/40 shadow-premium rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-hover;
+  }
+
+  .glass-panel {
+    @apply bg-white/40 backdrop-blur-xl border border-white/50 shadow-glass rounded-3xl transition-all duration-300;
+  }
+
+  /* Premium Buttons */
+  .btn-premium {
+    @apply relative overflow-hidden px-8 py-3.5 rounded-full font-semibold text-white 
+           bg-gradient-to-r from-babyPink to-pink-300 
+           shadow-button hover:shadow-hover hover:-translate-y-1 active:scale-95 
+           transition-all duration-300 flex items-center justify-center gap-2;
+  }
+
+  .btn-premium::after {
+    content: '';
+    @apply absolute inset-0 bg-white/20 translate-y-full transition-transform duration-300;
+  }
+
+  .btn-premium:hover::after {
+    @apply translate-y-0;
+  }
+
+  .btn-premium-outline {
+    @apply px-8 py-3.5 rounded-full font-semibold text-babyPink border-2 border-babyPink
+           hover:bg-babyPink hover:text-white hover:shadow-hover hover:-translate-y-1 
+           active:scale-95 transition-all duration-300 flex items-center justify-center gap-2;
+  }
+
+  /* Modern Inputs */
+  .input-premium {
+    @apply w-full px-6 py-4 bg-white/60 border border-white/80 rounded-2xl 
+           focus:outline-none focus:ring-4 focus:ring-babyPink/20 focus:bg-white/90
+           transition-all duration-300 shadow-sm placeholder:text-gray-400;
+  }
+
+  /* Typography */
+  .heading-luxury {
+    @apply font-bold tracking-tight text-luxury-black;
+    font-family: 'Poppins', sans-serif;
+  }
 }
 
-body {
-  font-family: 'Outfit', sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+/* Framer Motion Helper Classes */
+.motion-card {
+  @apply will-change-transform;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-nudeBeige/30;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-babyPink/50 rounded-full hover:bg-babyPink;
 }
 
-ul {
-  list-style: none;
+/* Animations */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
-/* Animations globales */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
-}
-
-/* Utilitaires Premium */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-  border-radius: 16px;
-}
-
-.btn-primary {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 12px 24px;
-  border-radius: 30px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-speed);
-  box-shadow: 0 4px 15px rgba(212, 163, 115, 0.3);
-}
-
-.btn-primary:hover {
-  background-color: var(--accent-color);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(169, 132, 103, 0.4);
-}
-
-/* Grille de produits */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
-}
-
-.product-card {
-  background: var(--surface-color);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-  transition: all var(--transition-speed);
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
-}
-
-.product-image {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.product-card:hover .product-image {
-  transform: scale(1.05);
-}
-
-/* Inputs élégants */
-.input-premium {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid transparent;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 8px;
-  font-family: inherit;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-}
-
-.input-premium:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  background: white;
-  box-shadow: 0 0 0 4px rgba(212, 163, 115, 0.1);
-}

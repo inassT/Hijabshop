@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import Home from './pages/Home';
@@ -9,40 +10,31 @@ import Recommendation from './pages/Recommendation';
 import Cart from './pages/Cart';
 import Orders from './pages/Orders';
 import AdminDashboard from './pages/AdminDashboard';
+import { AnimatePresence } from 'framer-motion';
 
 function App() {
   return (
     <Router>
-      <div className="app-container">
+      <div className="app-container bg-[#FAF9F6]">
         <Navbar />
-        <main style={{ minHeight: '80vh' }}>
-          <Routes>
-            {/* Routes publiques */}
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/recommendation" element={<Recommendation />} />
-
-            {/* Routes protégées (utilisateur connecté) */}
-            <Route path="/cart" element={
-              <PrivateRoute><Cart /></PrivateRoute>
-            } />
-            <Route path="/orders" element={
-              <PrivateRoute><Orders /></PrivateRoute>
-            } />
-
-            {/* Routes admin uniquement */}
-            <Route path="/admin" element={
-              <AdminRoute><AdminDashboard /></AdminRoute>
-            } />
-          </Routes>
+        <main className="min-h-screen">
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/recommendation" element={<Recommendation />} />
+              <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
+              <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
+              <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            </Routes>
+          </AnimatePresence>
         </main>
-        <footer style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-color)', opacity: 0.7 }}>
-          <p>&copy; 2026 HijabShop. Tous droits réservés.</p>
-        </footer>
+        <Footer />
       </div>
     </Router>
   );
 }
+
 
 export default App;

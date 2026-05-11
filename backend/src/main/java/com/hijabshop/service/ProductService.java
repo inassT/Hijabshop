@@ -39,7 +39,11 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+        try {
+            productRepository.deleteById(id);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            throw new RuntimeException("Ce produit ne peut pas être supprimé car il est lié à des commandes existantes. Vous devriez plutôt réduire son stock à 0.");
+        }
     }
 
     public List<Product> searchProducts(String nom, String couleur, Double prixMin, Double prixMax) {

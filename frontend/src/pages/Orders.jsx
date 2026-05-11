@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axiosConfig';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Package, Clock, CheckCircle2, Truck, CheckCircle, XCircle, ShoppingBag, Calendar, ChevronRight, Hash, ArrowLeft } from 'lucide-react';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -11,122 +16,157 @@ export default function Orders() {
 
   useEffect(() => {
     if (!userId) {
-      setError('Utilisateur non identifié.');
+      setError('Identifiez-vous pour accéder à vos commandes.');
       setLoading(false);
       return;
     }
 
     api.get(`/orders/user/${userId}`)
       .then(response => {
-        setOrders(response.data);
+        setOrders(response.data.sort((a, b) => b.id - a.id));
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
-        setError('Erreur lors du chargement des commandes.');
+        setError('Impossible de récupérer l\'historique des commandes.');
         setLoading(false);
       });
   }, [userId]);
 
-  const getStatusStyle = (statut) => {
+  const getStatusVariant = (statut) => {
     switch (statut) {
-      case 'EN_ATTENTE':
-        return { background: '#fff3cd', color: '#856404' };
-      case 'CONFIRMEE':
-        return { background: '#d4edda', color: '#155724' };
-      case 'EXPEDIEE':
-        return { background: '#cce5ff', color: '#004085' };
-      case 'LIVREE':
-        return { background: '#d1ecf1', color: '#0c5460' };
-      case 'ANNULEE':
-        return { background: '#f8d7da', color: '#721c24' };
-      default:
-        return { background: '#e2e3e5', color: '#383d41' };
+      case 'EN_ATTENTE': return 'waiting';
+      case 'CONFIRMEE': return 'confirmed';
+      case 'EN_PREPARATION': return 'preparing';
+      case 'EXPEDIEE': return 'shipped';
+      case 'LIVREE': return 'delivered';
+      case 'ANNULEE': return 'cancelled';
+      default: return 'default';
     }
   };
 
-  const getStatusLabel = (statut) => {
-    const labels = {
-      'EN_ATTENTE': '⏳ En attente',
-      'CONFIRMEE': '✅ Confirmée',
-      'EXPEDIEE': '🚚 Expédiée',
-      'LIVREE': '📦 Livrée',
-      'ANNULEE': '❌ Annulée'
-    };
-    return labels[statut] || statut;
-  };
-
   return (
-    <div className="animate-fade-in" style={{ padding: '2rem 5%', maxWidth: '1000px', margin: '0 auto' }}>
-      <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Mes Commandes</h2>
-      <p style={{ opacity: 0.7, marginBottom: '2rem' }}>Suivez l'état de vos commandes en temps réel.</p>
-
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: '5rem' }}>Chargement...</div>
-      ) : error ? (
-        <div style={{ padding: '1rem', background: '#f8d7da', color: '#721c24', borderRadius: '8px' }}>{error}</div>
-      ) : orders.length === 0 ? (
-        <div className="glass-panel" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-          <p style={{ fontSize: '1.2rem', marginBottom: '1.5rem', opacity: 0.8 }}>Vous n'avez aucune commande pour le moment.</p>
-          <Link to="/shop">
-            <button className="btn-primary">Découvrir nos collections</button>
-          </Link>
+    <div className="pt-32 pb-24 min-h-screen bg-[#FAF9F6]">
+      <div className="max-w-5xl mx-auto px-6">
+        
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
+          <div>
+            <Link to="/shop" className="flex items-center gap-2 text-babyPink font-black uppercase tracking-widest text-[10px] mb-4 hover:translate-x-[-4px] transition-transform w-fit">
+              <ArrowLeft size={14} /> Retour à la Boutique
+            </Link>
+            <h2 className="text-5xl font-black text-darkText tracking-tighter">
+              Mes <span className="text-transparent bg-clip-text bg-gradient-to-r from-babyPink to-pink-400">Commandes.</span>
+            </h2>
+          </div>
+          <div className="text-right">
+            <p className="text-darkText/40 font-bold uppercase tracking-widest text-[10px] mb-1">Historique Complet</p>
+            <p className="text-2xl font-black text-darkText">{orders.length} Expériences</p>
+          </div>
         </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {orders.map(order => (
-            <div key={order.id} className="glass-panel" style={{ padding: '2rem' }}>
-              {/* En-tête commande */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1.2rem', marginBottom: '0.25rem' }}>Commande #{order.id}</h3>
-                  <span style={{ fontSize: '0.85rem', opacity: 0.6 }}>
-                    {order.date ? new Date(order.date).toLocaleDateString('fr-FR', {
-                      year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    }) : 'Date inconnue'}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <span style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    ...getStatusStyle(order.statut)
-                  }}>
-                    {getStatusLabel(order.statut)}
-                  </span>
-                  <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--primary-color)' }}>
-                    {order.total?.toFixed(2)}€
-                  </span>
-                </div>
-              </div>
 
-              {/* Articles */}
-              {order.items && order.items.length > 0 && (
-                <div style={{ borderTop: '1px solid #eee', paddingTop: '1rem' }}>
-                  {order.items.map((item, index) => (
-                    <div key={index} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '0.5rem 0',
-                      borderBottom: index < order.items.length - 1 ? '1px solid #f5f5f5' : 'none'
-                    }}>
-                      <span style={{ fontWeight: 500 }}>
-                        {item.product?.nom || `Produit #${item.product?.id}`}
-                      </span>
-                      <span style={{ opacity: 0.7 }}>
-                        x{item.quantite} — {item.prix?.toFixed(2)}€
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-32 gap-6 bg-white/40 backdrop-blur-xl rounded-[4rem] border border-white/60">
+            <div className="w-16 h-16 border-4 border-pastelPink border-t-babyPink rounded-full animate-spin"></div>
+            <p className="text-darkText/40 font-black uppercase tracking-widest text-xs">Chargement de votre univers...</p>
+          </div>
+        ) : error ? (
+          <Card className="p-8 border-2 border-red-100 bg-red-50 text-red-600 text-center !rounded-[2.5rem]">
+            <p className="font-bold">{error}</p>
+            <Link to="/auth">
+              <Button variant="danger" className="mt-4 !rounded-xl">Se Connecter</Button>
+            </Link>
+          </Card>
+        ) : orders.length === 0 ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-32 bg-white/40 backdrop-blur-xl rounded-[4rem] border border-white/60 shadow-premium"
+          >
+            <div className="w-24 h-24 bg-nudeBeige/30 rounded-full flex items-center justify-center mx-auto mb-8">
+              <ShoppingBag size={40} className="text-babyPink" />
             </div>
-          ))}
-        </div>
-      )}
+            <p className="text-2xl font-black text-darkText/30 mb-10">Votre voyage HijabShop commence ici.</p>
+            <Link to="/shop">
+              <Button className="!px-12 !py-5 !text-lg !rounded-[2rem]">Découvrir les Collections</Button>
+            </Link>
+          </motion.div>
+        ) : (
+          <div className="flex flex-col gap-8">
+            {orders.map((order, index) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                key={order.id}
+              >
+                <Card className="p-10 bg-white hover:shadow-premium transition-all duration-500 group">
+                  <div className="flex flex-col lg:flex-row gap-12">
+                    {/* Status & ID */}
+                    <div className="lg:w-64 shrink-0">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-darkText/30 group-hover:bg-babyPink group-hover:text-white transition-colors duration-500">
+                          <Hash size={24} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black text-darkText/30 uppercase tracking-[0.2em] mb-1">Commande</p>
+                          <p className="text-xl font-black text-darkText tracking-tighter">#{order.id}</p>
+                        </div>
+                      </div>
+                      <Badge variant={getStatusVariant(order.statut)} className="!px-6 !py-2 !text-xs !rounded-xl">
+                        {order.statut.replace('_', ' ')}
+                      </Badge>
+                      <div className="mt-8 pt-8 border-t border-pastelPink/10">
+                        <p className="text-[10px] font-black text-darkText/30 uppercase tracking-[0.2em] mb-2">Placée le</p>
+                        <div className="flex items-center gap-2 text-darkText font-bold text-sm">
+                          <Calendar size={16} className="text-babyPink" />
+                          {new Date(order.date).toLocaleDateString('fr-FR', {
+                            day: 'numeric', month: 'short', year: 'numeric'
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Items */}
+                    <div className="flex-grow flex flex-col gap-4">
+                      <p className="text-[10px] font-black text-darkText/30 uppercase tracking-[0.2em] mb-2">Sélection Luxury</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {order.items?.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-4 bg-slate-50/50 p-4 rounded-3xl border border-slate-100 hover:bg-white hover:shadow-soft transition-all cursor-default">
+                            <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-sm shrink-0">
+                              <img src={item.product?.image} className="w-full h-full object-cover" alt="" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-black text-darkText truncate text-sm mb-1">{item.product?.nom}</p>
+                              <div className="flex items-center gap-3">
+                                <span className="text-[10px] font-black text-babyPink bg-babyPink/10 px-2 py-0.5 rounded-md uppercase">{item.quantite}X</span>
+                                <span className="text-xs font-bold text-darkText/40">{item.prix.toFixed(2)}€</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Total & Action */}
+                    <div className="lg:w-48 flex flex-col justify-between items-end shrink-0">
+                      <div className="text-right">
+                        <p className="text-[10px] font-black text-darkText/30 uppercase tracking-[0.2em] mb-1">Total TTC</p>
+                        <p className="text-4xl font-black text-darkText tracking-tighter">{order.total?.toFixed(2)}<span className="text-xl ml-1 text-babyPink">€</span></p>
+                      </div>
+                      
+                      <Button variant="outline" className="!rounded-2xl group/btn !py-3 !px-6">
+                        Détails <ChevronRight size={16} className="ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+

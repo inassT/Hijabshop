@@ -3,19 +3,20 @@
 -- Exécuté au démarrage si spring.sql.init.mode=always
 -- ============================================================
 
--- Supprimer dans l'ordre des dépendances
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE order_items;
-TRUNCATE TABLE orders;
-TRUNCATE TABLE reviews;
-TRUNCATE TABLE products;
-TRUNCATE TABLE users;
-SET FOREIGN_KEY_CHECKS = 1;
+-- Supprimer dans l'ordre des dépendances (Désactivé pour garder les données)
+-- SET FOREIGN_KEY_CHECKS = 0;
+-- TRUNCATE TABLE order_items;
+-- TRUNCATE TABLE orders;
+-- TRUNCATE TABLE reviews;
+-- TRUNCATE TABLE products;
+-- TRUNCATE TABLE users;
+-- SET FOREIGN_KEY_CHECKS = 1;
 
 -- ============================================================
 -- UTILISATEURS (mot de passe = "admin123" hashé en BCrypt)
 -- ============================================================
 INSERT INTO users (nom, email, password, role) VALUES
+('Admin Global', 'ADMIN@GMAIL.COM', '$2b$10$z53GbMm/0Pm3vJDUBQ1ECeBsFYlhDZiTnTwi0NXIaW6NDJdpsG4mu', 'ADMIN'),
 ('Admin HijabShop', 'admin@hijabshop.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lFhS', 'ADMIN'),
 ('Fatima Zahra', 'user@hijabshop.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lFhS', 'USER');
 

@@ -32,10 +32,18 @@ public class Order {
     private LocalDateTime date;
 
     @Column(nullable = false)
-    private String statut;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus statut;
 
     @Column(nullable = false)
     private Double total;
+
+    private LocalDateTime updatedAt;
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
