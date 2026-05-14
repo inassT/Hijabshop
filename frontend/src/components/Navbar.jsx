@@ -13,7 +13,7 @@ export default function Navbar() {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
   const isAdmin = userRole === 'ROLE_ADMIN';
 
   useEffect(() => {
@@ -36,15 +36,15 @@ export default function Navbar() {
   const NavLink = ({ to, children, icon: Icon }) => {
     const isActive = location.pathname === to;
     return (
-      <Link 
-        to={to} 
+      <Link
+        to={to}
         onClick={() => setIsMobileMenuOpen(false)}
         className={`relative group flex items-center gap-2 px-4 py-2 transition-all duration-300 font-medium ${isActive ? 'text-babyPink' : 'text-darkText/70 hover:text-babyPink'}`}
       >
         {Icon && <Icon size={18} className={isActive ? 'text-babyPink' : 'text-darkText/40 group-hover:text-babyPink transition-colors'} />}
         {children}
         {isActive && (
-          <motion.div 
+          <motion.div
             layoutId="nav-underline"
             className="absolute bottom-0 left-4 right-4 h-0.5 bg-babyPink rounded-full"
           />
@@ -53,27 +53,27 @@ export default function Navbar() {
     );
   };
 
+    const isAdminPage = location.pathname === '/admin';
+
   return (
     <>
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'py-3' : 'py-6'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`flex justify-between items-center px-6 py-3 transition-all duration-500 rounded-full border border-white/20 ${isScrolled ? 'bg-white/70 backdrop-blur-xl shadow-premium' : 'bg-transparent'}`}>
-            
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'py-2' : 'py-4'} ${isAdminPage ? 'lg:pl-80 bg-[#FAF9F6]/80 backdrop-blur-md border-b border-pastelPink/10' : ''}`}>
+        <div className={`${isAdminPage ? 'w-full px-8 lg:px-12' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}`}>
+          <div className={`flex justify-between items-center px-8 py-3 transition-all duration-500 ${isAdminPage ? 'bg-white rounded-3xl shadow-sm border border-pastelPink/10' : 'rounded-full border border-white/20'} ${isScrolled && !isAdminPage ? 'bg-white/70 backdrop-blur-xl shadow-premium' : (isAdminPage ? '' : 'bg-transparent')}`}>
+
             {/* Logo */}
             <Link to="/" className="text-2xl font-black tracking-tight text-darkText flex items-center gap-2 group">
-              <div className="w-10 h-10 bg-premium-gradient rounded-xl flex items-center justify-center shadow-soft group-hover:rotate-12 transition-transform duration-500">
-                <span className="text-white text-xl">✨</span>
-              </div>
+
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-darkText to-gray-500">HijabShop</span>
             </Link>
-            
+
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center gap-2">
               <NavLink to="/">Accueil</NavLink>
               <NavLink to="/shop">Boutique</NavLink>
               <NavLink to="/recommendation">Analyse Couleur</NavLink>
               {token && <NavLink to="/orders" icon={Package}>Commandes</NavLink>}
-              {isAdmin && <NavLink to="/admin" icon={Shield}>Dashboard Admin</NavLink>}
+              {isAdmin && !isAdminPage && <NavLink to="/admin" icon={Shield}>Dashboard Admin</NavLink>}
             </div>
 
             {/* Icons Menu */}
@@ -92,11 +92,11 @@ export default function Navbar() {
                   <Button variant="ghost" className="!px-4 !py-2 !text-sm">Connexion</Button>
                 </Link>
               )}
-              
+
               <Link to="/cart" className="relative p-2.5 bg-white/50 backdrop-blur-md rounded-full shadow-sm hover:shadow-md hover:bg-babyPink/10 text-darkText/60 hover:text-babyPink transition-all duration-300">
                 <ShoppingBag size={22} />
                 {getCartCount() > 0 && (
-                  <motion.span 
+                  <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     className="absolute -top-1 -right-1 bg-babyPink text-white text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center shadow-button border-2 border-white"
@@ -117,8 +117,8 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
-              <button 
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 bg-white/50 backdrop-blur-md rounded-full shadow-sm text-darkText"
               >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -131,7 +131,7 @@ export default function Navbar() {
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
@@ -144,7 +144,7 @@ export default function Navbar() {
                 <X size={24} />
               </button>
             </div>
-            
+
             <div className="flex flex-col gap-6 text-2xl font-bold">
               <NavLink to="/">Accueil</NavLink>
               <NavLink to="/shop">Boutique</NavLink>

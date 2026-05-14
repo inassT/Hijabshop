@@ -140,7 +140,7 @@ export default function Orders() {
                               <p className="font-black text-darkText truncate text-sm mb-1">{item.product?.nom}</p>
                               <div className="flex items-center gap-3">
                                 <span className="text-[10px] font-black text-babyPink bg-babyPink/10 px-2 py-0.5 rounded-md uppercase">{item.quantite}X</span>
-                                <span className="text-xs font-bold text-darkText/40">{item.prix.toFixed(2)}€</span>
+                                <span className="text-xs font-bold text-darkText/40">{item.prix.toFixed(2)} DH</span>
                               </div>
                             </div>
                           </div>
@@ -152,7 +152,7 @@ export default function Orders() {
                     <div className="lg:w-48 flex flex-col justify-between items-end shrink-0">
                       <div className="text-right">
                         <p className="text-[10px] font-black text-darkText/30 uppercase tracking-[0.2em] mb-1">Total TTC</p>
-                        <p className="text-4xl font-black text-darkText tracking-tighter">{order.total?.toFixed(2)}<span className="text-xl ml-1 text-babyPink">€</span></p>
+                        <p className="text-4xl font-black text-darkText tracking-tighter">{order.total?.toFixed(2)}<span className="text-xl ml-1 text-babyPink"> DH</span></p>
                       </div>
                       
                       <Button variant="outline" className="!rounded-2xl group/btn !py-3 !px-6">

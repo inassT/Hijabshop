@@ -1,5 +1,31 @@
 package com.hijabshop.config;
 
+/**
+ * COMPARAISON AVEC UNE APPROCHE TRADITIONNELLE (SANS SPRING SECURITY) :
+ * 
+ * 1. Authentification & Filtres :
+ *    - SANS SPRING : Il faudrait créer un "Filter" Servlet manuel (implements Filter) 
+ *      déclaré dans web.xml ou avec @WebFilter. Ce filtre devrait manuellement 
+ *      extraire le token du header, le valider, et gérer les erreurs.
+ *    - AVEC SPRING : On utilise une "SecurityFilterChain". Spring gère une chaîne 
+ *      de filtres interne (DelegatingFilterProxy) qui automatise ces étapes.
+ * 
+ * 2. Gestion des Sessions :
+ *    - SANS SPRING : On utiliserait request.getSession() pour stocker l'utilisateur. 
+ *      Il faut gérer manuellement l'expiration et la synchronisation.
+ *    - AVEC SPRING : La configuration est centralisée. Ici, nous sommes en "STATELESS" 
+ *      (sans session côté serveur) pour une API REST, ce qui est simplifié par Spring.
+ * 
+ * 3. Autorisation par Rôles :
+ *    - SANS SPRING : Dans chaque Servlet, il faudrait faire : 
+ *      if (!user.getRole().equals("ADMIN")) { response.sendError(403); }
+ *    - AVEC SPRING : On utilise requestMatchers("/api/admin/**").hasRole("ADMIN") 
+ *      ou des annotations comme @PreAuthorize sur les méthodes de service.
+ * 
+ * 4. Avantages : Réduction du code "boilerplate", protection automatique contre 
+ *    les failles courantes (CSRF, Session Fixation), et maintenance centralisée.
+ */
+
 import com.hijabshop.security.JwtAuthFilter;
 import com.hijabshop.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;

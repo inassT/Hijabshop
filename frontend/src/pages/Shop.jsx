@@ -198,7 +198,7 @@ export default function Shop() {
                   </div>
                   
                   <div className="space-y-3">
-                    <label className="text-xs font-black uppercase tracking-widest text-darkText/40 ml-2">Gamme de Prix (€)</label>
+                    <label className="text-xs font-black uppercase tracking-widest text-darkText/40 ml-2">Gamme de Prix (DH)</label>
                     <div className="flex items-center gap-4">
                       <input
                         className="input-premium !py-3 !rounded-xl text-center"
@@ -297,7 +297,7 @@ export default function Shop() {
                       <h3 className="text-xl font-bold text-darkText group-hover:text-babyPink transition-colors truncate pr-4">
                         {product.nom}
                       </h3>
-                      <span className="text-2xl font-black text-darkText">{product.prix}€</span>
+                      <span className="text-2xl font-black text-darkText">{product.prix} DH</span>
                     </div>
                     
                     <p className="text-sm text-darkText/40 mb-4 line-clamp-2 italic">

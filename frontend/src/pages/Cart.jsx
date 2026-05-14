@@ -84,7 +84,7 @@ export default function Cart() {
           </div>
           <div className="text-right">
             <p className="text-darkText/40 font-bold uppercase tracking-widest text-[10px] mb-1">{cartItems.length} Articles</p>
-            <p className="text-2xl font-black text-darkText">{getCartTotal().toFixed(2)}€</p>
+            <p className="text-2xl font-black text-darkText">{getCartTotal().toFixed(2)} DH</p>
           </div>
         </div>
 
@@ -173,7 +173,7 @@ export default function Cart() {
                                 <Plus size={16} />
                               </button>
                             </div>
-                            <p className="text-3xl font-black text-darkText">{(item.prix * item.quantity).toFixed(2)}€</p>
+                            <p className="text-3xl font-black text-darkText">{(item.prix * item.quantity).toFixed(2)} DH</p>
                           </div>
                         </div>
                       </div>
@@ -197,7 +197,7 @@ export default function Cart() {
                 <div className="space-y-6 mb-10">
                   <div className="flex justify-between text-sm font-bold">
                     <span className="text-darkText/40 uppercase tracking-widest">Sous-total</span>
-                    <span className="text-darkText">{getCartTotal().toFixed(2)}€</span>
+                    <span className="text-darkText">{getCartTotal().toFixed(2)} DH</span>
                   </div>
                   <div className="flex justify-between text-sm font-bold">
                     <span className="text-darkText/40 uppercase tracking-widest">Expédition</span>
@@ -207,7 +207,7 @@ export default function Cart() {
                 
                 <div className="flex justify-between items-end mb-10 pt-6 border-t border-pastelPink/20">
                   <span className="text-lg font-black text-darkText">Total</span>
-                  <span className="text-4xl font-black text-babyPink">{getCartTotal().toFixed(2)}€</span>
+                  <span className="text-4xl font-black text-babyPink">{getCartTotal().toFixed(2)} DH</span>
                 </div>
 
                 <Button 

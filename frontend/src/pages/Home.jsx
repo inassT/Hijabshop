@@ -124,50 +124,6 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Featured Collection */}
-          <div className="mb-32">
-            <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
-              <div>
-                <h2 className="text-5xl font-black text-darkText tracking-tighter mb-4">La Sélection <span className="text-babyPink">Iconique.</span></h2>
-                <p className="text-darkText/40 font-bold uppercase tracking-widest text-xs">Nos pièces les plus convoitées du moment</p>
-              </div>
-              <Link to="/shop">
-                <Button variant="ghost" className="!rounded-2xl" icon={ArrowRight}>Voir toute la boutique</Button>
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                { name: "Medina Silk Nude", price: "45€", img: "https://images.unsplash.com/photo-1621072156002-e2fcc60b4ef3?w=500" },
-                { name: "Satin Royal Pearl", price: "55€", img: "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=500" },
-                { name: "Premium Jersey Rose", price: "35€", img: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500" },
-                { name: "Chiffon Creamy", price: "39€", img: "https://images.unsplash.com/photo-1552046122-03184de85e08?w=500" }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="group overflow-hidden">
-                    <div className="aspect-[3/4] overflow-hidden rounded-[2rem] mb-6">
-                      <img src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="font-black text-darkText tracking-tight">{item.name}</h4>
-                        <p className="text-babyPink font-black">{item.price}</p>
-                      </div>
-                      <button className="w-10 h-10 bg-darkText text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                        <ShoppingBag size={18} />
-                      </button>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
 
           {/* AI Banner */}
           <motion.div 

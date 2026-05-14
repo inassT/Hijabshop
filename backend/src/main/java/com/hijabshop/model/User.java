@@ -35,4 +35,12 @@ public class User {
     @com.fasterxml.jackson.annotation.JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_favorites",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private java.util.Set<Product> favorites = new java.util.HashSet<>();
 }

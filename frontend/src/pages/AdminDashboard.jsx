@@ -27,6 +27,9 @@ export default function AdminDashboard() {
   const [productForm, setProductForm] = useState({ nom: '', description: '', prix: '', couleur: '', image: '', stock: '' });
   
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // --- Confirmation Modal ---
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
 
   // ===================== INITIALISATION =====================
   useEffect(() => {
@@ -88,13 +91,19 @@ export default function AdminDashboard() {
     }
   };
 
-  const deleteProduct = async (id) => {
-    if (!window.confirm('Supprimer ce produit ?')) return;
-    try {
-      await api.delete(`/products/${id}`);
-      showToast('Produit supprimé');
-      loadProducts();
-    } catch (err) { showToast('Erreur', 'error'); }
+  const deleteProduct = (id) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Supprimer le produit',
+      message: 'Êtes-vous sûr de vouloir retirer ce hijab de la collection ? Cette action est irréversible.',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/products/${id}`);
+          showToast('Produit supprimé');
+          loadProducts();
+        } catch (err) { showToast('Erreur', 'error'); }
+      }
+    });
   };
 
   const updateOrderStatus = async (orderId, newStatus) => {
@@ -113,13 +122,19 @@ export default function AdminDashboard() {
     } catch (err) { showToast('Erreur', 'error'); }
   };
 
-  const deleteUser = async (id) => {
-    if (!window.confirm('Supprimer cet utilisateur ?')) return;
-    try {
-      await api.delete(`/admin/users/${id}`);
-      showToast('Utilisateur supprimé');
-      loadUsers();
-    } catch (err) { showToast('Erreur', 'error'); }
+  const deleteUser = (id) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Supprimer l\'utilisateur',
+      message: 'Souhaitez-vous vraiment révoquer l\'accès de ce client ? Ses données seront définitivement effacées.',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/admin/users/${id}`);
+          showToast('Utilisateur supprimé');
+          loadUsers();
+        } catch (err) { showToast('Erreur', 'error'); }
+      }
+    });
   };
 
   const resetProductForm = () => {
@@ -155,9 +170,6 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <div className="w-80 h-screen sticky top-0 hidden lg:flex flex-col p-8 border-r border-pastelPink/20 bg-white">
         <div className="flex items-center gap-3 mb-12">
-          <div className="w-12 h-12 bg-premium-gradient rounded-2xl flex items-center justify-center text-white shadow-soft">
-            <ShieldAlert size={24} />
-          </div>
           <div>
             <h1 className="text-xl font-black text-darkText leading-none">HijabShop</h1>
             <p className="text-[10px] font-black uppercase tracking-widest text-babyPink">Admin Panel</p>
@@ -196,7 +208,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow p-8 lg:p-12 overflow-x-hidden">
+      <div className="flex-grow p-8 lg:p-12 pt-32 lg:pt-32 overflow-x-hidden">
         
         {/* Top Bar */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
@@ -236,7 +248,7 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <p className="text-xs font-black uppercase tracking-widest text-darkText/30 mb-1">Chiffre d'Affaires</p>
-                  <p className="text-3xl font-black text-darkText">{totalRevenue.toFixed(2)}€</p>
+                  <p className="text-3xl font-black text-darkText">{totalRevenue.toFixed(2)} DH</p>
                 </div>
               </Card>
               <Card glass className="p-8 flex flex-col gap-4">
@@ -332,7 +344,7 @@ export default function AdminDashboard() {
                     <div className="p-6 pt-0">
                       <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl font-bold text-darkText truncate pr-4">{product.nom}</h3>
-                        <span className="text-2xl font-black text-babyPink">{product.prix}€</span>
+                        <span className="text-2xl font-black text-babyPink">{product.prix} DH</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <Badge variant="user">{product.couleur}</Badge>
@@ -375,7 +387,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between lg:justify-end gap-12">
                     <div className="text-right">
                       <p className="text-[10px] font-black text-darkText/20 uppercase tracking-widest mb-1">Total</p>
-                      <p className="text-3xl font-black text-darkText">{order.total?.toFixed(2)}€</p>
+                      <p className="text-3xl font-black text-darkText">{order.total?.toFixed(2)} DH</p>
                     </div>
 
                     <div className="relative">
@@ -489,7 +501,7 @@ export default function AdminDashboard() {
                       <input className="input-premium !rounded-[2rem] !py-4" value={productForm.couleur} onChange={e => setProductForm({...productForm, couleur: e.target.value})} required />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-darkText/30 ml-4">Prix (€)</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-darkText/30 ml-4">Prix (DH)</label>
                       <input className="input-premium !rounded-[2rem] !py-4" type="number" step="0.01" value={productForm.prix} onChange={e => setProductForm({...productForm, prix: e.target.value})} required />
                     </div>
                     <div className="space-y-2">
@@ -521,6 +533,51 @@ export default function AdminDashboard() {
               {globalMsg.type === 'success' ? <CheckCircle2 size={24} /> : <AlertCircle size={24} />}
               <span className="font-black text-sm uppercase tracking-widest">{globalMsg.text}</span>
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Custom Confirmation Modal */}
+        <AnimatePresence>
+          {confirmModal.isOpen && (
+            <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                exit={{ opacity: 0 }} 
+                className="absolute inset-0 bg-darkText/60 backdrop-blur-md" 
+                onClick={() => setConfirmModal({ ...confirmModal, isOpen: false })} 
+              />
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0, y: 20 }} 
+                animate={{ scale: 1, opacity: 1, y: 0 }} 
+                exit={{ scale: 0.9, opacity: 0, y: 20 }} 
+                className="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden p-10 text-center"
+              >
+                <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <AlertCircle size={40} />
+                </div>
+                <h3 className="text-2xl font-black text-darkText mb-4 tracking-tighter">{confirmModal.title}</h3>
+                <p className="text-darkText/50 font-medium leading-relaxed mb-10">
+                  {confirmModal.message}
+                </p>
+                <div className="flex gap-4">
+                  <Button 
+                    variant="ghost" 
+                    className="flex-1 !py-4 !rounded-2xl" 
+                    onClick={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+                  >
+                    Annuler
+                  </Button>
+                  <Button 
+                    variant="danger" 
+                    className="flex-1 !py-4 !rounded-2xl shadow-lg shadow-red-500/20" 
+                    onClick={() => { confirmModal.onConfirm(); setConfirmModal({ ...confirmModal, isOpen: false }); }}
+                  >
+                    Confirmer
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
 
